@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState } from 'react'
 import { toast } from '@/components/ui/sonner'
 import Button from '~/components/Button'
@@ -17,7 +18,12 @@ const celNameSchema = z.object({
     }),
 })
 
-export default function CelNameForm({ balance }: { balance: bigint }) {
+interface CelNameFormProps {
+  balance: bigint
+  forceLowercase?: boolean
+}
+
+const CelNameForm: React.FC<CelNameFormProps> = ({ balance, forceLowercase = false }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const { mutateAsync } = useRegisterSecondLevelDomain()
   const {
@@ -27,6 +33,13 @@ export default function CelNameForm({ balance }: { balance: bigint }) {
   } = useForm({
     resolver: zodResolver(celNameSchema),
   })
+
+  const [inputValue, setInputValue] = useState<string>('')
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = forceLowercase ? e.target.value.toLowerCase() : e.target.value
+    setInputValue(value)
+  }
 
   const onSubmit = async (data: any) => {
     setIsLoading(true)
@@ -47,6 +60,8 @@ export default function CelNameForm({ balance }: { balance: bigint }) {
           placeholder="xxx"
           className="w-full mt-2"
           {...register('domain')}
+          value={inputValue}
+          onChange={handleInputChange}
         />
         <span className="ml-2 pt-8 text-2xl">.cel</span>
       </div>
@@ -66,3 +81,5 @@ export default function CelNameForm({ balance }: { balance: bigint }) {
     </form>
   )
 }
+
+export default CelNameForm

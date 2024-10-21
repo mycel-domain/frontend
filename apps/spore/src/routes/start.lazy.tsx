@@ -260,7 +260,7 @@ function RegisterCelName({ balance }: { balance: bigint }) {
       {!isLoadingOwnDomain && mycelName ? (
         <p className="text-right font-title text-3xl font-bold">{mycelName}</p>
       ) : (
-        <CelNameForm balance={balance} />
+        <CelNameForm balance={balance} forceLowercase={true} />
       )}
     </>
   )
